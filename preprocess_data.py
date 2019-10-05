@@ -30,18 +30,27 @@ class PreprocessData:
 
     def nan_values(self):
         """
-        detect nans and substitute them with mean
+        detect nans and substitute them with median
         :return:
         """
-        imp = SimpleImputer(missing_values=np.nan, strategy='mean')
+        imp = SimpleImputer(missing_values=np.nan, strategy='median')  # because median is not prone to outliers
         # find the columns in which nan values appear
         rows_with_nans = self.data.isna().sum() != 0
         rows_with_nans = rows_with_nans[rows_with_nans==True]
         # fill in the nans appearing in rows with mean value
-        for i in range(2):  # because the rest are dates, which I choose to discard
+        for i in range(2):
             table = imp.fit(self.data[rows_with_nans.index[i]].values.reshape(-1, 1))
             self.data[rows_with_nans.index[i]] = table.transform(self.data[rows_with_nans.index[i]].values.reshape(-1, 1))
         return self.data
+
+    def woe(self):  # weight of evidence, to check which values are relevant for the predictions
+        pass
+
+    def outliers(self):
+        pass
+
+    def bin_data(self):
+        pass
 
     def normalize_data(self):
         """
